@@ -2,12 +2,13 @@ package com.f3pro.dscatalog.services;
 
 
 import com.f3pro.dscatalog.dto.CategoryDTO;
+import com.f3pro.dscatalog.entities.Category;
 import com.f3pro.dscatalog.repositories.CategoryRepository;
+import com.f3pro.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -22,7 +23,20 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryDTO> findAll() {
         return repository.findAll().
-                stream().map(CategoryDTO::new).collect(Collectors.toList());
+                stream().map(CategoryDTO::new).toList();
 
+    }
+    @Transactional(readOnly = true)
+    public CategoryDTO findById( Long id) {
+       return new CategoryDTO(getEntityById(id));
+    }
+
+
+//método de busca desacoplado
+    private Category getEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Categoria não encontrada para o id " + id)
+                );
     }
 }
