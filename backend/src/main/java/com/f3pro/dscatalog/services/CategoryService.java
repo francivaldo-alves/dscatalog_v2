@@ -31,6 +31,12 @@ public class CategoryService {
        return new CategoryDTO(getEntityById(id));
     }
 
+    @Transactional
+    public CategoryDTO insert(CategoryDTO dto) {
+        Category category = new Category();
+        category.setName(dto.getName());
+        return new CategoryDTO(repository.save(category));
+    }
 
 //método de busca desacoplado
     private Category getEntityById(Long id) {
@@ -39,4 +45,6 @@ public class CategoryService {
                         new ResourceNotFoundException("Categoria não encontrada para o id " + id)
                 );
     }
+
+
 }
