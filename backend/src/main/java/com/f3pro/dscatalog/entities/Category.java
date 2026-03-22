@@ -1,49 +1,40 @@
 package com.f3pro.dscatalog.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.Objects;
+import java.time.Instant;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tb_category")
-public class Category{
-
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    public Category() {}
-    public Category(Long id, String name) {
-        this.id = id;
-        this.name = name;
+  /*  @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant createdAt;
+
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = Instant.now();
+        updatedAt = createdAt;
     }
 
-    public Long getId() {
-        return id;
-    }
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
+}*/
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Category category)) return false;
-        return Objects.equals(id, category.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }
