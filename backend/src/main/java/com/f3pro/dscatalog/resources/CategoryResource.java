@@ -3,7 +3,13 @@ package com.f3pro.dscatalog.resources;
 
 import com.f3pro.dscatalog.dto.CategoryDTO;
 import com.f3pro.dscatalog.services.CategoryService;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,15 +24,28 @@ public class CategoryResource {
 
     private final CategoryService service;
 
-    @Autowired
     public CategoryResource(CategoryService service) {
         this.service = service;
     }
 
-    @Operation(summary = "Buscar todas as categorias")
+   /* @Operation(summary = "Buscar todas as categorias")
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> findAll() {
         var categories = service.findAll();
+        return ResponseEntity.ok().body(categories);
+
+    }
+*/
+
+    @Operation(summary = "Buscar todas as categorias")
+    @GetMapping
+    public ResponseEntity<Page<CategoryDTO>> findAll(
+           @ParameterObject
+           @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+
+
+        var categories = service.findAllPaged(pageable);
         return ResponseEntity.ok().body(categories);
 
     }

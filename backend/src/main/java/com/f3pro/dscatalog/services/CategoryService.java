@@ -7,6 +7,9 @@ import com.f3pro.dscatalog.services.exceptions.DatabaseException;
 import com.f3pro.dscatalog.services.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +27,29 @@ public class CategoryService {
         this.repository = repository;
     }
 
-    /**
+   /* *//**
      * Busca todas as categorias cadastradas
      * Transação somente leitura para melhor performance
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<CategoryDTO> findAll() {
         return repository.findAll()
                 .stream()
                 .map(CategoryDTO::new)
                 .toList();
+    }*/
+
+
+    /**
+     * Busca todas as categorias cadastradas
+     * Transação somente leitura para melhor performance
+     */
+    @Transactional(readOnly = true)
+    public Page<CategoryDTO> findAllPaged(Pageable pageable) {
+        return repository.findAll(pageable)
+                .map(CategoryDTO::new);
     }
+
 
     /**
      * Busca uma categoria por ID
@@ -65,7 +80,7 @@ public class CategoryService {
      * Atualiza uma categoria existente
      * Valida existência antes de atualizar
      */
-    @Transactional
+  /*  @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         log.info("Atualizando categoria id: {}", id);
 
@@ -75,13 +90,27 @@ public class CategoryService {
         entity = repository.save(entity);
 
         return new CategoryDTO(entity);
+    }*/
+    public CategoryDTO update(Long id, CategoryDTO dto) {
+        log.info("Atualizando categoria id: {}", id);
+        try {
+            Category entity = repository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
+            entity = repository.save(entity);
+            return new CategoryDTO(entity);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Erro ao atualizar - id não encontrado: {}", id);
+            throw new ResourceNotFoundException("Categoria não encontrada para o id " + id);
+        }
+
     }
+
 
     /**
      * Remove uma categoria pelo ID
      * - Valida se o ID existe antes de deletar
      * - Trata erro de integridade referencial
-     *
+     * <p>
      * Propagation.SUPPORTS:
      * Executa dentro de uma transação existente ou sem transação
      */
