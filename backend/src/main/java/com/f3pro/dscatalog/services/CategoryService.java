@@ -6,6 +6,7 @@ import com.f3pro.dscatalog.repositories.CategoryRepository;
 import com.f3pro.dscatalog.services.exceptions.DatabaseException;
 import com.f3pro.dscatalog.services.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.action.internal.EntityActionVetoException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -80,7 +81,7 @@ public class CategoryService {
      * Atualiza uma categoria existente
      * Valida existência antes de atualizar
      */
-  /*  @Transactional
+   @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         log.info("Atualizando categoria id: {}", id);
 
@@ -90,7 +91,8 @@ public class CategoryService {
         entity = repository.save(entity);
 
         return new CategoryDTO(entity);
-    }*/
+    }
+   /* @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         log.info("Atualizando categoria id: {}", id);
         try {
@@ -98,12 +100,12 @@ public class CategoryService {
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
             return new CategoryDTO(entity);
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntityActionVetoException e) {
             log.error("Erro ao atualizar - id não encontrado: {}", id);
             throw new ResourceNotFoundException("Categoria não encontrada para o id " + id);
         }
 
-    }
+    }*/
 
 
     /**
@@ -120,7 +122,7 @@ public class CategoryService {
 
         // Validação prévia para garantir que o recurso existe
         if (!repository.existsById(id)) {
-            log.error("Erro ao deletar - id não encontrado: {}", id);
+            log.info("Categoria inativada com sucesso id: {}", id);
             throw new ResourceNotFoundException("Recurso não encontrado para o id: " + id);
         }
 

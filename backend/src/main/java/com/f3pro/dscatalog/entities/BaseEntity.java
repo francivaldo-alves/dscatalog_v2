@@ -1,9 +1,6 @@
 package com.f3pro.dscatalog.entities;
 
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Column;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -18,9 +15,13 @@ public abstract class BaseEntity {
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant updatedAt;
 
+/*    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant deletedAt;*/
+
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
+        updatedAt = createdAt;
     }
 
     @PreUpdate

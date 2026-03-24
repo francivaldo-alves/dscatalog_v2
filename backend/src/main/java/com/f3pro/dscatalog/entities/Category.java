@@ -2,6 +2,8 @@ package com.f3pro.dscatalog.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Instant;
 
@@ -13,6 +15,8 @@ import java.time.Instant;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tb_category")
+/*@SQLDelete(sql = "UPDATE tb_category SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")*/
 public class Category extends BaseEntity {
 
     @Id
@@ -20,21 +24,5 @@ public class Category extends BaseEntity {
     private Long id;
     private String name;
 
-  /*  @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    private Instant createdAt;
-
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    private Instant updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = Instant.now();
-        updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = Instant.now();
-}*/
 
 }
